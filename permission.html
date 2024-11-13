@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Access</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #3f92e7;
+            color: #00796b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #3394f5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #004d40;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Request Location</h1>
+        <p>I'd like to know your location. Click the button to share.</p>
+        <button onclick="getLocation()">Share My Location</button>
+    </div>
+
+    <script>
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(sendLocation, showError);
+        } else {
+          alert("Geolocation is not supported by this browser.");
+        }
+      }
+
+      function sendLocation(position) {
+        const lat = position.coords.latitude;
+        const long = position.coords.longitude;
+
+        // Send location data to your server
+        fetch('file:///C:/Users/kcprp/StudioProjects/AndroidStudioProjects1/permission.html', { // Replace with your server endpoint
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ latitude: lat, longitude: long })
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert("Location shared successfully!");
+        })
+        .catch(error => {
+          console.error("Error sharing location:", error);
+        });
+      }
+
+      function showError(error) {
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            break;
+          case error.TIMEOUT:
+            alert("The request to get user location timed out.");
+            break;
+          case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred.");
+            break;
+        }
+      }
+    </script>
+</body>
+</html>
